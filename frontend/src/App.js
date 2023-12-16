@@ -116,20 +116,28 @@ export default function App() {
           </tr>
         </thead>
         <tbody>
-          {businessData.map((business) => (
-            <tr key={business.business_id}>
-              <td>{business.business_id}</td>
-              <td>{business.name}</td>
-              <td>{business.address}</td>
-              <td>{business.city}</td>
-              <td>{business.state}</td>
-              <td>{business.postal_code}</td>
-              <td>{business.stars}</td>
-              <td>{business.review_count}</td>
-              <td>{business.is_open}</td>
-              <td>{business.categories}</td>
+          {businessData.length > 0 ? (
+            businessData.map((business) => (
+              <tr key={business.business_id}>
+                <td>{business.business_id}</td>
+                <td>{business.name}</td>
+                <td>{business.address}</td>
+                <td>{business.city}</td>
+                <td>{business.state}</td>
+                <td>{business.postal_code}</td>
+                <td>{business.stars}</td>
+                <td>{business.review_count}</td>
+                <td>{business.is_open}</td>
+                <td>{business.categories}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="10" className="text-center">
+                No results found.
+              </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 

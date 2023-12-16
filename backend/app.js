@@ -30,23 +30,37 @@ app.get("/api/data", (req, res) => {
   const filters = req.query.filters || [];
 
   let whereClauses = [];
+  let categoryClauses = [];
+  let currentFilter = null;
 
   filters.forEach((filter) => {
     const { type, value } = filter;
     if (type && value) {
-      let condition = "=";
-
       if (type === "category") {
-        condition = "LIKE";
-        whereClauses.push(`categories ${condition} '%${value}%'`);
+        categoryClauses.push(`FIND_IN_SET(${mysql.escape(value)}, categories)`);
       } else {
-        whereClauses.push(`${type} ${condition} ${mysql.escape(value)}`);
+        if (type === currentFilter) {
+          whereClauses.push(` OR ${type} = ${mysql.escape(value)}`);
+        } else {
+          if (currentFilter !== null) {
+            whereClauses.push(")");
+          }
+          currentFilter = type;
+          whereClauses.push(` AND ((${type} = ${mysql.escape(value)})`);
+        }
       }
     }
   });
 
-  const whereClause =
-    whereClauses.length > 0 ? " AND (" + whereClauses.join(" AND ") + ")" : "";
+  if (categoryClauses.length > 0) {
+    whereClauses.push(` AND (${categoryClauses.join(" OR ")})`);
+  }
+
+  if (currentFilter !== null) {
+    whereClauses.push(")");
+  }
+
+  const whereClause = whereClauses.length > 0 ? whereClauses.join("") : "";
 
   const countQuery = `SELECT COUNT(*) as total FROM business WHERE 1=1 ${whereClause}`;
   con.query(countQuery, (err, countResult) => {
@@ -65,7 +79,6 @@ app.get("/api/data", (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
         return;
       }
-
       res.json({ result, totalResults });
     });
   });
