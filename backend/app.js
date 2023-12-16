@@ -79,6 +79,7 @@ app.get("/api/data", (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
         return;
       }
+
       res.json({ result, totalResults });
     });
   });

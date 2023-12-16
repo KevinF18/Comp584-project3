@@ -15,8 +15,8 @@ export default function App() {
   const handleApplyFilters = () => {
     setCurrentPage(1);
     const trimmedFilterValue = filterValue.trim();
-    setAppliedFilters([
-      ...appliedFilters,
+    setAppliedFilters((prevFilters) => [
+      ...prevFilters,
       { type: filterType, value: trimmedFilterValue },
     ]);
   };
@@ -82,17 +82,19 @@ export default function App() {
         </div>
 
         <div className="mt-3">
-          {appliedFilters.map((filter, index) => (
-            <span key={index} className="badge bg-secondary me-2">
+          {appliedFilters.map((filter, uniqueId) => (
+            <span key={uniqueId} className="badge bg-secondary me-2">
               {filter.type === "categories"
                 ? `category: ${filter.value}`
                 : `${filter.type}: ${filter.value}`}
               <button
                 className="btn-close btn-close-white ms-2"
                 onClick={() => {
-                  const updatedFilters = [...appliedFilters];
-                  updatedFilters.splice(index, 1);
-                  setAppliedFilters(updatedFilters);
+                  setAppliedFilters((prevFilters) => {
+                    const updatedFilters = [...prevFilters];
+                    updatedFilters.splice(uniqueId, 1);
+                    return updatedFilters;
+                  });
                 }}
               />
             </span>
