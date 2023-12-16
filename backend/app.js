@@ -34,12 +34,12 @@ app.get("/api/data", (req, res) => {
   filters.forEach((filter) => {
     const { type, value } = filter;
     if (type && value) {
-      whereClauses.push(`${type} LIKE '%${value}%'`);
+      whereClauses.push(`${type} = ${mysql.escape(value)}`);
     }
   });
 
   const whereClause =
-    whereClauses.length > 0 ? " AND (" + whereClauses.join(" OR ") + ")" : "";
+    whereClauses.length > 0 ? " AND (" + whereClauses.join(" AND ") + ")" : "";
 
   const countQuery = `SELECT COUNT(*) as total FROM business WHERE 1=1 ${whereClause}`;
   con.query(countQuery, (err, countResult) => {
