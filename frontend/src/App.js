@@ -14,9 +14,10 @@ export default function App() {
 
   const handleApplyFilters = () => {
     setCurrentPage(1);
+    const trimmedFilterValue = filterValue.trim();
     setAppliedFilters([
       ...appliedFilters,
-      { type: filterType, value: filterValue },
+      { type: filterType, value: trimmedFilterValue },
     ]);
   };
 
