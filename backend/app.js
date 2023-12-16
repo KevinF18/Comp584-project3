@@ -34,7 +34,14 @@ app.get("/api/data", (req, res) => {
   filters.forEach((filter) => {
     const { type, value } = filter;
     if (type && value) {
-      whereClauses.push(`${type} = ${mysql.escape(value)}`);
+      let condition = "=";
+
+      if (type === "category") {
+        condition = "LIKE";
+        whereClauses.push(`categories ${condition} '%${value}%'`);
+      } else {
+        whereClauses.push(`${type} ${condition} ${mysql.escape(value)}`);
+      }
     }
   });
 

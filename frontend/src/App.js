@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const filterOptions = ["state", "categories", "name", "city"];
+const filterOptions = ["state", "category", "name", "city"];
 
 export default function App() {
   const [businessData, setBusinessData] = useState([]);
@@ -83,7 +83,9 @@ export default function App() {
         <div className="mt-3">
           {appliedFilters.map((filter, index) => (
             <span key={index} className="badge bg-secondary me-2">
-              {filter.type}: {filter.value}
+              {filter.type === "categories"
+                ? `category: ${filter.value}`
+                : `${filter.type}: ${filter.value}`}
               <button
                 className="btn-close btn-close-white ms-2"
                 onClick={() => {
